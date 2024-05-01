@@ -9,9 +9,9 @@ const Login = () => {
                 <div id="loading-center">
                 </div>
             </div> */}
-            <button onClick={() => {
+            {/* <button onClick={() => {
                 wirec.put('test', 'smmit');
-            }}>Check me</button>
+            }}>Check me</button> */}
 
             <div className="wrapper">
                 <section className="sign-in-page">
