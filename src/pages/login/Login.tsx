@@ -1,28 +1,21 @@
 import wirec from "wirec";
 import SignInDetails from "../../section/SignInDetails";
 import SignInForm from "../../section/SignInForm";
+import { getAuth } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
 
 const Login = () => {
+    const navigate = useNavigate();
+    const auth = getAuth();
+    const [user, loading, error] = useAuthState(auth);
+
+
     return (
         <>
-            {/* <div id="loading">
-                <div id="loading-center">
-                </div>
-            </div> */}
-            {/* <button onClick={() => {
-                wirec.put('test', 'smmit');
-            }}>Check me</button> */}
-
-            <div className="wrapper">
+            {user ? navigate("/") : <div className="wrapper">
                 <section className="sign-in-page">
-                    <div id="container-inside">
-                        <div id="circle-small"></div>
-                        <div id="circle-medium"></div>
-                        <div id="circle-large"></div>
-
-                        <div id="circle-xlarge"></div>
-                        <div id="circle-xxlarge"></div>
-                    </div>
                     <div className="container p-0">
                         <div className="row no-gutters">
                             <div className="col-md-6 text-center pt-5">
@@ -39,7 +32,8 @@ const Login = () => {
                         </div>
                     </div>
                 </section>
-            </div>
+            </div>}
+
         </>
     );
 }

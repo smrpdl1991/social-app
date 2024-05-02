@@ -49,7 +49,9 @@ body {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent
 }
-
+.content-page{
+    padding: 0 !important;
+}
 hr {
     margin: 1.25rem 0;
     color: inherit;
@@ -4220,7 +4222,7 @@ textarea.form-control-lg {
 .dropdown-menu {
     position: absolute;
     z-index: 1000;
-    display: none;
+    /* display: none; */
     min-width: 10rem;
     padding: 0 0;
     margin: 0;

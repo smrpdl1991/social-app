@@ -9,15 +9,18 @@ import SideNav from './section/CommonField/SideNav';
 import RightNav from './section/CommonField/RightNav';
 import RoutesComponent from './component/Routes';
 
-function App() {
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+function App() {
     return (
         <div className="App wrapper">
             <Router>
                 <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/*"
+                    <Route path="/sign-in" element={<Login />} />
+                    <Route path="/sign-up" element={<SignUp />} />
+      
+                    <Route path="/*" 
                         element={
                             <>
                                 <PrivateRoute element={<Header />} />
@@ -29,6 +32,7 @@ function App() {
                     />
                 </Routes>
             </Router>
+            <ToastContainer />
         </div>
     );
 }
