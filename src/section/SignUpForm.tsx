@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import InputField from "../component/InputField";
 import { registerSchema } from "../schema/inputFieldSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateCurrentUser, updateProfile, signOut } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { hashPassword } from "../utils/hash";
@@ -18,7 +18,7 @@ const SignUpForm = () => {
     } = useForm({
         resolver: zodResolver(registerSchema),
         defaultValues: {
-            registerName: "",
+            displayName: "",
             registerEmail: "",
             registerPassword: "",
             terms: false,
@@ -37,16 +37,10 @@ const SignUpForm = () => {
         try {
             const { user } = await createUserWithEmailAndPassword(auth, registerEmail, registerPassword);
             if (user) {
-                // Hash the password before storing it
-                const hashedPassword = await hashPassword(registerPassword);
-
-                await addDoc(collection(firestore, "users"), {
-                    uid: user.uid,
-                    name: registerName,
-                    email: registerEmail,
-                    password: hashedPassword,
+                await updateProfile(user, {
+                    displayName: registerName,
                 });
-
+                await updateCurrentUser(auth, user);
                 reset();
                 toast.success("User created successfully");  
                 navigate("/sign-in");
@@ -59,13 +53,13 @@ const SignUpForm = () => {
     return (
         <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
             <InputField
-                id="registerName"
+                id="displayName"
                 type="text"
                 placeholder="Full Name"
                 label="Full Name"
-                hasError={!!errors.registerName}
-                errorMessage={errors.registerName?.message?.toString() ?? ""}
-                {...register("registerName")}
+                hasError={!!errors.displayName}
+                errorMessage={errors.displayName?.message?.toString() ?? ""}
+                {...register("displayName")}
             />
             <InputField
                 id="registerEmail"
