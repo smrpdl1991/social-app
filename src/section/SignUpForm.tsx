@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import InputField from "../component/InputField";
 import { registerSchema } from "../schema/inputFieldSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getAuth, createUserWithEmailAndPassword, updateCurrentUser, updateProfile, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { hashPassword } from "../utils/hash";
@@ -18,7 +18,7 @@ const SignUpForm = () => {
     } = useForm({
         resolver: zodResolver(registerSchema),
         defaultValues: {
-            displayName: "",
+            registerName: "",
             registerEmail: "",
             registerPassword: "",
             terms: false,
@@ -29,7 +29,6 @@ const SignUpForm = () => {
     const navigate = useNavigate();
     const onSubmit = async (data: any) => {
         const { registerName, registerEmail, registerPassword, terms } = data;
-
         if (!terms) {
             toast.error("Please accept the terms and conditions");
             return;
@@ -37,12 +36,20 @@ const SignUpForm = () => {
         try {
             const { user } = await createUserWithEmailAndPassword(auth, registerEmail, registerPassword);
             if (user) {
-                await updateProfile(user, {
+                // Hash the password before storing it
+                const hashedPassword = await hashPassword(registerPassword);
+
+                await addDoc(collection(firestore, "users"), {
+                    uid: user.uid,
                     displayName: registerName,
+                    email: registerEmail,
+                    password: hashedPassword,
                 });
-                await updateCurrentUser(auth, user);
+                updateProfile(user, {
+                    displayName: registerName
+                });
                 reset();
-                toast.success("User created successfully");  
+                toast.success("User created successfully");
                 navigate("/sign-in");
             }
         } catch (error: any) {
@@ -53,13 +60,13 @@ const SignUpForm = () => {
     return (
         <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
             <InputField
-                id="displayName"
+                id="registerName"
                 type="text"
                 placeholder="Full Name"
                 label="Full Name"
-                hasError={!!errors.displayName}
-                errorMessage={errors.displayName?.message?.toString() ?? ""}
-                {...register("displayName")}
+                hasError={!!errors.registerName}
+                errorMessage={errors.registerName?.message?.toString() ?? ""}
+                {...register("registerName")}
             />
             <InputField
                 id="registerEmail"

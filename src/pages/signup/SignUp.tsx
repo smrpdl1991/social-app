@@ -7,7 +7,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 const SignUp = () => {
     const navigate = useNavigate();
     const auth = getAuth();
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     return (
         <>
             {user ? navigate("/") :
