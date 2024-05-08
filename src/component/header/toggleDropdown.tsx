@@ -1,16 +1,6 @@
-import { getAuth, signOut } from "@firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { logout } from "../../utils/logout";
 
 const SubDropdown = () => {
-    const navigate = useNavigate();
-    const auth = getAuth();
-    const logout = () => {
-        signOut(auth);
-        toast.success("User logged out successfully");
-        navigate("/sign-in");
-    }
-
     return (
         <div className={`sub-drop dropdown-menu caption-menu `}>
             <div className="card shadow-none m-0">

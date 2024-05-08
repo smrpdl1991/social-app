@@ -3,7 +3,7 @@ import InputField from "../component/InputField";
 import { registerSchema } from "../schema/inputFieldSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { hashPassword } from "../utils/hash";
 import { toast } from "react-toastify";
@@ -38,16 +38,21 @@ const SignUpForm = () => {
             if (user) {
                 // Hash the password before storing it
                 const hashedPassword = await hashPassword(registerPassword);
-
-                await addDoc(collection(firestore, "users"), {
+                const userDoc = {
                     uid: user.uid,
                     displayName: registerName,
                     email: registerEmail,
                     password: hashedPassword,
-                });
+                    bio: "",
+                    profilePicUrl: "",
+                    followers: "",
+                    following: ""
+                }
+                await setDoc(doc(firestore, "users", user.uid), userDoc);
                 updateProfile(user, {
                     displayName: registerName
                 });
+                console.log(userDoc)
                 reset();
                 toast.success("User created successfully");
                 navigate("/sign-in");

@@ -24,18 +24,16 @@ const SignInForm = () => {
     const auth = getAuth();
     const navigate = useNavigate();
     const onSubmit = (data: any) => {
-        const { loginEmail, loginPassword, remember_me } = data;
+        const { loginEmail, loginPassword } = data;
         signInWithEmailAndPassword(auth, loginEmail, loginPassword)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                console.log("User:", user);
+            .then(() => {
                 navigate("/");
                 toast.success("User logged in successfully");
                 reset();
             })
             .catch((error) => {
                 const errorMessage = error.message;
-                toast.error("Error:", errorMessage);
+                toast.error("Error while login :", errorMessage);
             });
     };
 
